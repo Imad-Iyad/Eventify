@@ -18,14 +18,22 @@ public class Registration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Event event;
+
+
+    private String registrationToken;
+
+    @Lob
+    private byte[] qrCode;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "invitation_id", unique = true) // unique تمنع التكرار
+    private Invitation invitation;
 
     private LocalDateTime registeredAt;
     private Boolean attendanceConfirmed;
-    private String qrCode;
-
 }

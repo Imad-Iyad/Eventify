@@ -18,13 +18,18 @@ public class Invitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private Event event;
+
+    @OneToOne(mappedBy = "invitation")
+    private Registration registration;
+
     private String inviteeEmail;
-    private String token;
+
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;
-    private String qrCode;
+
     private LocalDateTime sentAt;
     private LocalDateTime respondedAt;
 

@@ -3,10 +3,15 @@ package com.imad.eventify.model.mappers;
 import com.imad.eventify.model.DTOs.InvitationDTO;
 import com.imad.eventify.model.entities.Invitation;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface InvitationMapper {
+    @Mapping(source = "event.id", target = "eventId")
     InvitationDTO toDTO(Invitation invitation);
+
+    @Mapping(source = "eventId", target = "event.id")
     Invitation toEntity(InvitationDTO dto);
 }
+
 
