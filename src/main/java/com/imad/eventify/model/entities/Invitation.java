@@ -15,23 +15,26 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 public class Invitation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String token; // رابط الدعوة يحتوي عليه
+
     @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @OneToOne(mappedBy = "invitation")
-    private Registration registration;
-
-    private String inviteeEmail;
+    @Column(nullable = false)
+    private String email; // الشخص اللي أرسلنا له الدعوة
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private InvitationStatus status;
 
     private LocalDateTime sentAt;
-    private LocalDateTime respondedAt;
+    private LocalDateTime usedAt;
 
 }
-

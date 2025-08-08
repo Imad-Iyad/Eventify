@@ -5,14 +5,14 @@ import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
 import com.imad.eventify.model.entities.Registration;
 import com.imad.eventify.model.entities.User;
+import com.imad.eventify.model.entities.enums.InvitationStatus;
+import com.imad.eventify.model.mappers.RegistrationMapper;
 import com.imad.eventify.repositories.EventRepository;
 import com.imad.eventify.repositories.InvitationRepository;
 import com.imad.eventify.repositories.RegistrationRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.RegistrationService;
 import com.imad.eventify.utils.QRCodeGenerator;
-import com.imad.eventify.model.mappers.RegistrationMapper;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +48,17 @@ public class RegistrationServiceImpl implements RegistrationService {
             invitation = invitationRepository.findById(dto.getInvitationId())
                     .orElseThrow(() -> new RuntimeException("Invitation not found"));
 
-            // تحقق إذا تم استخدام رابط الدعوة مسبقا
+            // التحقق إذا الدعوة مستخدمة
+            if (invitation.getStatus() == InvitationStatus.USED) {
+                throw new RuntimeException("This invitation has already been used");
+            }
+
+            // تحقق إذا تم استخدامها عبر التسجيل
             boolean invitationUsed = registrationRepository.existsByInvitation(invitation);
             if (invitationUsed) {
                 throw new RuntimeException("This invitation has already been used");
             }
         }
-
 
         // توليد توكن و QR
         String token = UUID.randomUUID().toString();
@@ -71,6 +75,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .build();
 
         Registration saved = registrationRepository.save(registration);
+
+        // إذا فيه دعوة، نحدث حالتها
+        if (invitation != null) {
+            invitation.setStatus(InvitationStatus.USED);
+            invitation.setUsedAt(LocalDateTime.now());
+            invitationRepository.save(invitation);
+        }
+
         return registrationMapper.toDTO(saved);
     }
 
