@@ -29,6 +29,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final InvitationRepository invitationRepository;
     private final RegistrationMapper registrationMapper;
 
+    // for both private and public events
     @Override
     public RegistrationDTO registerToEvent(RegistrationDTO dto) {
         User user = userRepository.findById(dto.getUserId())

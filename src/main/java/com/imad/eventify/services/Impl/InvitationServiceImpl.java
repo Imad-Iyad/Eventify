@@ -35,7 +35,7 @@ public class InvitationServiceImpl implements InvitationService {
         invitationRepository.save(invitation);
 
         // بناء رابط الدعوة
-        String link = "https://eventify.com/invite?token=" + invitation.getToken();
+        String link = "https://localhost:8091/api/registration/" + invitation.getToken();
 
         // إرسال الإيميل
         String subject = "Invitation to: " + event.getTitle();
