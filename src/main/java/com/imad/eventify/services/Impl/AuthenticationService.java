@@ -1,5 +1,8 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.model.DTOs.AuthenticationRequest;
+import com.imad.eventify.model.DTOs.AuthenticationResponse;
+import com.imad.eventify.model.DTOs.RegisterRequest;
 import com.imad.eventify.model.entities.User;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.security.JwtService;
@@ -19,24 +22,33 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        // التحقق من الإيميل إذا كان موجود مسبقًا
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
+
         userRepository.save(user);
+
         String token = jwtService.generateToken(user);
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, user.getName(), user.getRole());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
+
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
         String token = jwtService.generateToken(user);
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, user.getName(), user.getRole());
     }
 }

@@ -18,10 +18,12 @@ public class Registration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
 
@@ -30,8 +32,8 @@ public class Registration {
     @Lob
     private byte[] qrCode;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "invitation_id", unique = true) // unique تمنع التكرار
+    @OneToOne
+    @JoinColumn(name = "invitation_id", unique = true)
     private Invitation invitation;
 
     private LocalDateTime registeredAt;

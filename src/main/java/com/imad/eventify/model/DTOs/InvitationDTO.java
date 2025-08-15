@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 public class InvitationDTO {
     private Long id;
     private Long eventId;
-    private String inviteeEmail;
+    private String email; //inviteeEmail
     private InvitationStatus status;
     private LocalDateTime sentAt;
-    private LocalDateTime respondedAt;
+    private LocalDateTime usedAt;
 }
 
 //للدعوات المرسلة في الفعاليات الخاصة فقط.

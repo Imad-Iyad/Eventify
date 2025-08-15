@@ -18,5 +18,3 @@ public interface RegistrationMapper {
     @Mapping(source = "invitationId", target = "invitation.id")
     Registration toEntity(RegistrationDTO dto);
 }
-
-
