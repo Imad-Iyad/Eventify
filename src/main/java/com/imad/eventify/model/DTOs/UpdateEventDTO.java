@@ -1,5 +1,6 @@
 package com.imad.eventify.model.DTOs;
 
+import com.imad.eventify.model.entities.enums.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,13 +12,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventDTO {
-    private Long id;
+public class UpdateEventDTO {
+
     private String title;
     private String description;
-    private LocalDateTime dateTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String location;
-    private boolean isPublic;
-    private Long organizerId;
+    private EventType eventType;
 }
-//لإنشاء وتحديث معلومات الفعالية.
+//لتحديث معلومات الفعالية.

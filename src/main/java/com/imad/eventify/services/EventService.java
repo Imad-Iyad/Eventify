@@ -1,14 +1,16 @@
 package com.imad.eventify.services;
 
-import com.imad.eventify.model.DTOs.EventDTO;
 import com.imad.eventify.model.DTOs.EventCreationRequest;
+import com.imad.eventify.model.DTOs.EventResponseDTO;
+import com.imad.eventify.model.DTOs.UpdateEventDTO;
 
 import java.util.List;
 
 public interface EventService {
-    EventDTO createEvent(EventCreationRequest request);
-    EventDTO getEventById(Long id);
-    List<EventDTO> getAllEvents();
+    EventResponseDTO createEvent(EventCreationRequest request);
+    EventResponseDTO getEventById(Long id);
+    List<EventResponseDTO> getAllEvents();
+    EventResponseDTO updateEvent(Long id, UpdateEventDTO UpdateEventDTO);
     void deleteEvent(Long id);
 }
 

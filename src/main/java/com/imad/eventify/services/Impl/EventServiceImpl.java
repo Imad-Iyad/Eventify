@@ -1,14 +1,20 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.Exceptions.EventNotFoundException;
+import com.imad.eventify.Exceptions.UserNotFoundException;
 import com.imad.eventify.model.DTOs.EventCreationRequest;
-import com.imad.eventify.model.DTOs.EventDTO;
+import com.imad.eventify.model.DTOs.EventResponseDTO;
+import com.imad.eventify.model.DTOs.UpdateEventDTO;
 import com.imad.eventify.model.entities.Event;
+import com.imad.eventify.model.entities.User;
 import com.imad.eventify.model.mappers.EventMapper;
 import com.imad.eventify.repositories.EventRepository;
+import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,28 +22,57 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
     private final EventMapper eventMapper;
 
     @Override
-    public EventDTO createEvent(EventCreationRequest request) {
-        Event event = eventMapper.toEntity(request);
-        Event saved = eventRepository.save(event);
-        return eventMapper.toDTO(saved);
+    public EventResponseDTO createEvent(EventCreationRequest request) {
+        User organizer = userRepository.findById(request.getOrganizerId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + request.getOrganizerId()));
+
+        Event event = Event.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .location(request.getLocation())
+                .startDateTime(request.getStartDateTime())
+                .endDateTime(request.getEndDateTime())
+                .eventType(request.getEventType())
+                .capacity(request.getCapacity())
+                .organizer(organizer) // ربط المنظم بالفعالية
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        Event savedEvent = eventRepository.save(event);
+        return eventMapper.toDTO(savedEvent);
     }
 
     @Override
-    public EventDTO getEventById(Long id) {
+    public EventResponseDTO getEventById(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         return eventMapper.toDTO(event);
     }
 
     @Override
-    public List<EventDTO> getAllEvents() {
+    public List<EventResponseDTO> getAllEvents() {
         return eventRepository.findAll()
                 .stream()
                 .map(eventMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public EventResponseDTO updateEvent(Long id, UpdateEventDTO updateEventDTO) {
+        Event existing =  eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + id));
+        existing.setTitle(updateEventDTO.getTitle());
+        existing.setDescription(updateEventDTO.getDescription());
+        existing.setLocation(updateEventDTO.getLocation());
+        existing.setStartDateTime(updateEventDTO.getStartDateTime());
+        existing.setEndDateTime(updateEventDTO.getEndDateTime());
+        existing.setEventType(updateEventDTO.getEventType());
+        return eventMapper.toDTO(eventRepository.save(existing));
     }
 
     @Override

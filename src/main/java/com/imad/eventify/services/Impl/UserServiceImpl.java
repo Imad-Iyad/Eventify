@@ -1,5 +1,6 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.Exceptions.UserNotFoundException;
 import com.imad.eventify.model.DTOs.UserDTO;
 import com.imad.eventify.model.entities.User;
 import com.imad.eventify.model.mappers.UserMapper;
@@ -51,6 +52,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with id " + id + " not found.");
+        }
         userRepository.deleteById(id);
     }
+
 }
