@@ -8,6 +8,8 @@ import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.InvitationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +22,11 @@ public class InvitationServiceImpl implements InvitationService {
     private final EmailService emailService;
     //private final InvitationMapper invitationMapper;
 
+    @Value("${app.base-url}")
+    private String baseUrl; // رح تتعى تلقائياً من ملف الـ properties
+
     @Override
+    @Transactional
     public Invitation sendInvitation(Event event, String email) {
         // إنشاء الدعوة
         Invitation invitation = Invitation.builder()
@@ -35,7 +41,7 @@ public class InvitationServiceImpl implements InvitationService {
         invitationRepository.save(invitation);
 
         // بناء رابط الدعوة
-        String link = "https://localhost:8091/api/registration/" + invitation.getToken();
+        String link = baseUrl + "/api/registration/" + invitation.getToken();
 
         // إرسال الإيميل
         String subject = "Invitation to: " + event.getTitle();

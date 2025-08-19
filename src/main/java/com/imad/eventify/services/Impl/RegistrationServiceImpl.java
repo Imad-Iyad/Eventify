@@ -1,5 +1,7 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.Exceptions.EventNotFoundException;
+import com.imad.eventify.Exceptions.UserNotFoundException;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
@@ -13,6 +15,7 @@ import com.imad.eventify.repositories.RegistrationRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.RegistrationService;
 import com.imad.eventify.utils.QRCodeGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,12 +34,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     // for both private and public events
     @Override
+    @Transactional
     public RegistrationDTO registerToEvent(RegistrationDTO dto) {
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getUserId()));
 
         Event event = eventRepository.findById(dto.getEventId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + dto.getEventId()));
 
         // منع التسجيل المكرر
         boolean alreadyRegistered = registrationRepository.existsByUserAndEvent(user, event);
@@ -88,9 +92,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    @Transactional
     public RegistrationDTO getRegistrationByToken(String token) {
         Registration registration = registrationRepository.findByRegistrationToken(token)
                 .orElseThrow(() -> new RuntimeException("Registration not found with token: " + token));
         return registrationMapper.toDTO(registration);
     }
+
 }
