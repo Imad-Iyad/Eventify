@@ -1,5 +1,7 @@
 package com.imad.eventify.model.DTOs;
 
+
+import com.imad.eventify.model.entities.enums.InvitationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendeeDTO {
+public class InvitationResponseDTO {
     private Long id;
-    private String name;
-    private String email;
-    private Boolean confirmed;
     private Long eventId;
+    private String email; //inviteeEmail
+    private InvitationStatus status;
 }
-//يمثل الحضور، سواء في فعاليات عامة أو خاصة.

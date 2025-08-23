@@ -26,15 +26,14 @@ public class Registration {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
+    @OneToOne
+    @JoinColumn(name = "invitation_id", unique = true)
+    private Invitation invitation;
 
     private String registrationToken;
 
     @Lob
     private byte[] qrCode;
-
-    @OneToOne
-    @JoinColumn(name = "invitation_id", unique = true)
-    private Invitation invitation;
 
     private LocalDateTime registeredAt;
     private Boolean attendanceConfirmed;

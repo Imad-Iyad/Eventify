@@ -1,5 +1,6 @@
 package com.imad.eventify.model.entities;
 
+import com.imad.eventify.model.entities.enums.ConfirmationMethods;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,6 @@ public class AttendanceConfirmation {
     private LocalDateTime confirmedAt;
 
     // تم التأكيد عن طريق QR أو رابط
-    private String confirmationMethod;
+    private ConfirmationMethods confirmationMethod;
 }
 

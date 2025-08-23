@@ -3,6 +3,7 @@ package com.imad.eventify.services.Impl;
 import com.imad.eventify.Exceptions.EventNotFoundException;
 import com.imad.eventify.Exceptions.UserNotFoundException;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
+import com.imad.eventify.model.DTOs.RegistrationReqDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
 import com.imad.eventify.model.entities.Registration;
@@ -13,8 +14,10 @@ import com.imad.eventify.repositories.EventRepository;
 import com.imad.eventify.repositories.InvitationRepository;
 import com.imad.eventify.repositories.RegistrationRepository;
 import com.imad.eventify.repositories.UserRepository;
+import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.RegistrationService;
 import com.imad.eventify.utils.QRCodeGenerator;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,18 +34,19 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final EventRepository eventRepository;
     private final InvitationRepository invitationRepository;
     private final RegistrationMapper registrationMapper;
+    private final EmailService emailService;
 
     // for both private and public events
     @Override
     @Transactional
-    public RegistrationDTO registerToEvent(RegistrationDTO dto) {
+    public RegistrationDTO registerToEvent(RegistrationReqDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getUserId()));
 
         Event event = eventRepository.findById(dto.getEventId())
                 .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + dto.getEventId()));
 
-        // منع التسجيل المكرر
+        // Prevention of refined registration
         boolean alreadyRegistered = registrationRepository.existsByUserAndEvent(user, event);
         if (alreadyRegistered) {
             throw new RuntimeException("User is already registered for this event");
@@ -53,19 +57,19 @@ public class RegistrationServiceImpl implements RegistrationService {
             invitation = invitationRepository.findById(dto.getInvitationId())
                     .orElseThrow(() -> new RuntimeException("Invitation not found"));
 
-            // التحقق إذا الدعوة مستخدمة
+            // Verification if invitation is used
             if (invitation.getStatus() == InvitationStatus.USED) {
                 throw new RuntimeException("This invitation has already been used");
             }
 
-            // تحقق إذا تم استخدامها عبر التسجيل
+            // Check if it is used by registering
             boolean invitationUsed = registrationRepository.existsByInvitation(invitation);
             if (invitationUsed) {
                 throw new RuntimeException("This invitation has already been used");
             }
         }
 
-        // توليد توكن و QR
+        // The generation of Token and QR
         String token = UUID.randomUUID().toString();
         byte[] qrCode = QRCodeGenerator.generateQRCode(token, 250, 250);
 
@@ -81,14 +85,23 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         Registration saved = registrationRepository.save(registration);
 
-        // إذا فيه دعوة، نحدث حالتها
+        // Update the status of invitation
         if (invitation != null) {
             invitation.setStatus(InvitationStatus.USED);
             invitation.setUsedAt(LocalDateTime.now());
             invitationRepository.save(invitation);
         }
 
-        return registrationMapper.toDTO(saved);
+        //  Send the registration confirmation with QR
+        try {
+            emailService.sendRegistrationConfirmation(user.getEmail(), event.getTitle(), qrCode);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send registration confirmation email", e);
+        }
+
+        RegistrationDTO registrationDTO = registrationMapper.toDTO(saved);
+        registrationDTO.setInviteeEmail(user.getEmail());
+        return registrationDTO;
     }
 
     @Override

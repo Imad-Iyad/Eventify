@@ -1,6 +1,7 @@
 package com.imad.eventify.model.mappers;
 
 import com.imad.eventify.model.DTOs.InvitationDTO;
+import com.imad.eventify.model.DTOs.InvitationResponseDTO;
 import com.imad.eventify.model.entities.Invitation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,6 +12,9 @@ public interface InvitationMapper {
     InvitationDTO toDTO(Invitation invitation);
 
     @Mapping(source = "eventId", target = "event.id")
-     Invitation toEntity(InvitationDTO dto);
+    Invitation toEntity(InvitationDTO dto);
+
+    @Mapping(source = "event.id", target = "eventId")
+    InvitationResponseDTO toResponseDTO(Invitation invitation);
 }
 

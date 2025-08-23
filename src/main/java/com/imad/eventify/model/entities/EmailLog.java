@@ -20,6 +20,4 @@ public class EmailLog {
     private Event event;
 
     private LocalDateTime sentAt;
-
-    // getters, setters, constructors
 }

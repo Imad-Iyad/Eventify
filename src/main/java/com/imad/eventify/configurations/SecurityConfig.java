@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // السماح للتسجيل والدخول
+                        .requestMatchers("/api/v1/auth/**").permitAll() // السماح للتسجيل والدخول
                         .requestMatchers(SWAGGER_WHITELIST).permitAll() // السماح للـ Swagger
                         .anyRequest().authenticated()
                 )

@@ -1,15 +1,18 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.model.DTOs.InvitationResponseDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
 import com.imad.eventify.model.entities.enums.InvitationStatus;
+import com.imad.eventify.model.mappers.InvitationMapper;
 import com.imad.eventify.repositories.InvitationRepository;
 import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.InvitationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,15 +23,14 @@ public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepository invitationRepository;
     private final EmailService emailService;
-    //private final InvitationMapper invitationMapper;
+    private final InvitationMapper invitationMapper;
 
     @Value("${app.base-url}")
-    private String baseUrl; // رح تتعى تلقائياً من ملف الـ properties
+    private String baseUrl;
 
     @Override
     @Transactional
-    public Invitation sendInvitation(Event event, String email) {
-        // إنشاء الدعوة
+    public InvitationResponseDTO sendInvitation(Event event, String email) {
         Invitation invitation = Invitation.builder()
                 .event(event)
                 .email(email)
@@ -37,23 +39,18 @@ public class InvitationServiceImpl implements InvitationService {
                 .sentAt(LocalDateTime.now())
                 .build();
 
-        // حفظ الدعوة
         invitationRepository.save(invitation);
 
-        // بناء رابط الدعوة
-        String link = baseUrl + "/api/registration/" + invitation.getToken();
+        String link = baseUrl + "/api/v1/registrations/by-invitation/" + invitation.getToken();
 
-        // إرسال الإيميل
-        String subject = "Invitation to: " + event.getTitle();
-        String body = "Hello,\n\nYou have been invited to the event: " + event.getTitle() +
-                "\nDate: " + event.getStartDateTime() +
-                "\nLocation: " + event.getLocation() +
-                "\n\nClick here to register: " + link +
-                "\n\nNote: This link can only be used once.";
+        // HTML
+        try {
+            emailService.sendInvitationEmail(email, event.getTitle(), link);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send invitation email", e);
+        }
 
-        emailService.sendEmail(email, subject, body);
-
-        return invitation;
+        return invitationMapper.toResponseDTO(invitation);
     }
 
     @Override
