@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttendanceConfirmationResDTO {
-    private Long registrationId;
+    private Long id;
+    private Long userId;
     private Long eventId;
-    private String attendeeName;
+    private Long registrationId;
     private LocalDateTime confirmedAt;
-    private String message; // مثلا "Attendance confirmed successfully"
 }

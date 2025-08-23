@@ -36,5 +36,4 @@ public class Registration {
     private byte[] qrCode;
 
     private LocalDateTime registeredAt;
-    private Boolean attendanceConfirmed;
 }

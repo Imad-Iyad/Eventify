@@ -19,5 +19,4 @@ public class RegistrationResDTO {
     private String inviteeEmail;   // البريد الإلكتروني من الدعوة
     private String registrationToken; // Token للتسجيل النهائي (للتحقق / QR code)
     private LocalDateTime registeredAt; // وقت التسجيل
-    private Boolean attendanceConfirmed;
 }

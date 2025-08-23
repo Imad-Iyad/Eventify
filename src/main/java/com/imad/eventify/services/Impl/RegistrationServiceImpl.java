@@ -80,7 +80,6 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .qrCode(qrCode)
                 .invitation(invitation)
                 .registeredAt(LocalDateTime.now())
-                .attendanceConfirmed(false)
                 .build();
 
         Registration saved = registrationRepository.save(registration);

@@ -76,7 +76,6 @@ public class InvitationServiceImpl implements InvitationService {
                 .eventId(invitation.getEvent().getId())
                 .invitationId(invitation.getId())
                 .inviteeEmail(invitation.getEmail())
-                .attendanceConfirmed(false)
                 .build();
     }
 }

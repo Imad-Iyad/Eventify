@@ -14,5 +14,4 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     boolean existsByUserAndEvent(User user, Event event);
     boolean existsByInvitation(Invitation invitation);
     Optional<Registration> findByRegistrationToken(String token);
-    Optional<Registration> findByInvitationId(Long invitationId);
 }
