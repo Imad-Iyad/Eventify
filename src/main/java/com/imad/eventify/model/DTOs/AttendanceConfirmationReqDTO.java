@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendanceConfirmationDTO {
-    private String token; // أو يمكن استخدام QR code hash
+public class AttendanceConfirmationReqDTO {
+    private String token;
 }
-//يستخدم لتأكيد الحضور عبر رابط أو مسح QR.

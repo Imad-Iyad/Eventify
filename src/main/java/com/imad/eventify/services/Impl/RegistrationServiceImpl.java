@@ -2,8 +2,8 @@ package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.Exceptions.EventNotFoundException;
 import com.imad.eventify.Exceptions.UserNotFoundException;
+import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
-import com.imad.eventify.model.DTOs.RegistrationReqDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
 import com.imad.eventify.model.entities.Registration;
@@ -39,7 +39,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     // for both private and public events
     @Override
     @Transactional
-    public RegistrationDTO registerToEvent(RegistrationReqDTO dto) {
+    public RegistrationResDTO registerToEvent(RegistrationDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getUserId()));
 
@@ -99,14 +99,14 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RuntimeException("Failed to send registration confirmation email", e);
         }
 
-        RegistrationDTO registrationDTO = registrationMapper.toDTO(saved);
-        registrationDTO.setInviteeEmail(user.getEmail());
-        return registrationDTO;
+        RegistrationResDTO registrationResDTO = registrationMapper.toDTO(saved);
+        registrationResDTO.setInviteeEmail(user.getEmail());
+        return registrationResDTO;
     }
 
     @Override
     @Transactional
-    public RegistrationDTO getRegistrationByToken(String token) {
+    public RegistrationResDTO getRegistrationByToken(String token) {
         Registration registration = registrationRepository.findByRegistrationToken(token)
                 .orElseThrow(() -> new RuntimeException("Registration not found with token: " + token));
         return registrationMapper.toDTO(registration);

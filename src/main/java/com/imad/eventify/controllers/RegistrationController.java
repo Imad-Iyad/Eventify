@@ -1,10 +1,7 @@
 package com.imad.eventify.controllers;
 
+import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
-import com.imad.eventify.model.DTOs.RegistrationReqDTO;
-import com.imad.eventify.model.entities.Invitation;
-import com.imad.eventify.model.entities.User;
-import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.InvitationService;
 import com.imad.eventify.services.RegistrationService;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +18,16 @@ public class RegistrationController {
 
     private final InvitationService invitationService;
     private final RegistrationService registrationService;
-    private final UserRepository userRepository;
-
     /**
      * Endpoint to register a user for an event.
      * This handles both public registrations and private ones via invitation.
      *
-     * @param registrationReqDTO DTO containing userId, eventId, and optionally invitationId.
+     * @param registrationDTO DTO containing userId, eventId, and optionally invitationId.
      * @return The created Registration details.
      */
     @PostMapping
-    public ResponseEntity<RegistrationDTO> registerForEvent(@RequestBody RegistrationReqDTO registrationReqDTO) {
-        RegistrationDTO createdRegistration = registrationService.registerToEvent(registrationReqDTO);
+    public ResponseEntity<RegistrationResDTO> registerForEvent(@RequestBody RegistrationDTO registrationDTO) {
+        RegistrationResDTO createdRegistration = registrationService.registerToEvent(registrationDTO);
         return new ResponseEntity<>(createdRegistration, HttpStatus.CREATED);
     }
 
@@ -44,9 +39,9 @@ public class RegistrationController {
      * @return The registration details.
      */
     @GetMapping("/{token}")
-    public ResponseEntity<RegistrationDTO> getRegistrationByToken(@PathVariable String token) {
-        RegistrationDTO registrationDTO = registrationService.getRegistrationByToken(token);
-        return ResponseEntity.ok(registrationDTO);
+    public ResponseEntity<RegistrationResDTO> getRegistrationByToken(@PathVariable String token) {
+        RegistrationResDTO registrationResDTO = registrationService.getRegistrationByToken(token);
+        return ResponseEntity.ok(registrationResDTO);
     }
 
     /**
@@ -88,25 +83,9 @@ public class RegistrationController {
      *   (ensuring security).
      */
     @GetMapping("/by-invitation/{token}")
-    public ResponseEntity<RegistrationReqDTO> getRegistrationFromInvitation(
+    public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(
             @PathVariable String token,
             @AuthenticationPrincipal UserDetails userDetails) {
-
-        Invitation invitation = invitationService.getInvitationByToken(token);
-
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        RegistrationReqDTO registrationReqDTO = RegistrationReqDTO.builder()
-                .userId(user.getId())
-                .eventId(invitation.getEvent().getId())
-                .invitationId(invitation.getId())
-                .inviteeEmail(invitation.getEmail())
-                .attendanceConfirmed(false)
-                .build();
-
-        return ResponseEntity.ok(registrationReqDTO);
+        return ResponseEntity.ok(invitationService.getInvitationByToken(token, userDetails));
     }
-
-
 }
