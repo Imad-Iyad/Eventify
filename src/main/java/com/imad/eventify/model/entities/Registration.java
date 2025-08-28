@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name = "event_registrations")
 @Entity
 public class Registration {
     @Id

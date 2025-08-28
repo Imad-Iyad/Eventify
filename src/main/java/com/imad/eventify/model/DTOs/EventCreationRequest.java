@@ -20,6 +20,5 @@ public class EventCreationRequest {
     private LocalDateTime endDateTime;
     private EventType eventType;
     private Integer capacity;
-    private Long OrganizerId;
 }
-//لتبسيط إرسال البيانات عند إنشاء فعالية (بدون الحاجة لتمرير organizerId يدويًا، لأنه يؤخذ من المستخدم المسجل).
+//لتبسيط إرسال البيانات عند إنشاء فعالية (بدون الحاجة لتمرير organizerId يدويًا، لأنه يؤخذ من المستخدم المسجل-->authenticated user).

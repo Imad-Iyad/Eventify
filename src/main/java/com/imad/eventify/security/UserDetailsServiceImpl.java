@@ -1,5 +1,6 @@
 package com.imad.eventify.security;
 
+import com.imad.eventify.Exceptions.InactiveUserException;
 import com.imad.eventify.model.entities.User;
 import com.imad.eventify.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
+
+        // Check the account status
+        if (!user.isActive()) {
+            throw new InactiveUserException("User account is deactivated");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
+                true,
+                true,
+                true,
+                true,
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
     }

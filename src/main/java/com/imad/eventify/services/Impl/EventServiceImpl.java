@@ -12,6 +12,8 @@ import com.imad.eventify.repositories.EventRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +29,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventResponseDTO createEvent(EventCreationRequest request) {
-        User organizer = userRepository.findById(request.getOrganizerId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + request.getOrganizerId()));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User organizer = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
 
         Event event = Event.builder()
                 .title(request.getTitle())
@@ -38,7 +43,7 @@ public class EventServiceImpl implements EventService {
                 .endDateTime(request.getEndDateTime())
                 .eventType(request.getEventType())
                 .capacity(request.getCapacity())
-                .organizer(organizer) // ربط المنظم بالفعالية
+                .organizer(organizer) // Connecting the organizer to the Event
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -72,6 +77,7 @@ public class EventServiceImpl implements EventService {
         existing.setStartDateTime(updateEventDTO.getStartDateTime());
         existing.setEndDateTime(updateEventDTO.getEndDateTime());
         existing.setEventType(updateEventDTO.getEventType());
+        existing.setUpdatedAt(LocalDateTime.now());
         return eventMapper.toDTO(eventRepository.save(existing));
     }
 

@@ -20,5 +20,6 @@ public class UpdateEventDTO {
     private LocalDateTime endDateTime;
     private String location;
     private EventType eventType;
+    private LocalDateTime updatedAt;
 }
-//لتحديث معلومات الفعالية.
+//To update Event information.

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "users")
 @Entity
 public class User {
     @Id
@@ -24,8 +25,10 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private LocalDateTime createdAt;
 
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private boolean active = true;
 }

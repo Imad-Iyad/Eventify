@@ -1,14 +1,18 @@
 package com.imad.eventify.services;
 
+import com.imad.eventify.model.DTOs.RegisterRequest;
 import com.imad.eventify.model.DTOs.UserDTO;
+import com.imad.eventify.model.DTOs.UserResponseDTO;
+import com.imad.eventify.model.entities.User;
 
 import java.util.List;
 
 public interface UserService {
-    UserDTO createUser(UserDTO userDTO);
-    UserDTO getUserById(Long id);
-    List<UserDTO> getAllUsers();
-    UserDTO updateUser(Long id, UserDTO userDTO);
-    void deleteUser(Long id);
+    User createUser(RegisterRequest registerRequest);
+    UserResponseDTO getCurrentUserDTO();
+    User getCurrentUserEntity();
+    List<UserResponseDTO> getAllUsers();
+    UserResponseDTO updateUser(UserDTO userDTO);
+    String deactivateCurrentUser();
 }
 

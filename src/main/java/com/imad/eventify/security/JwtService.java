@@ -23,7 +23,7 @@ public class JwtService {
                 .claim("role", user.getRole().name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(key) // ✅ بدون algorithm
+                .signWith(key)
                 .compact();
     }
 

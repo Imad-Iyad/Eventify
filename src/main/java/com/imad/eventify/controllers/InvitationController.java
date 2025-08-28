@@ -22,11 +22,4 @@ public class InvitationController {
         InvitationResponseDTO invitationResponseDTO = invitationService.sendInvitation(eventId, email);
         return ResponseEntity.ok(invitationResponseDTO);
     }
-
-    /* /api/v1/invitations/b8b05a9c-54d9-45c7-bf57-02aef2286db9
-    @GetMapping("/{token}")
-    public ResponseEntity<Invitation> getInvitation(@PathVariable String token) {
-        Invitation invitation = invitationService.getInvitationByToken(token);
-        return ResponseEntity.ok(invitation);
-    }*/
 }

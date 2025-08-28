@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "events")
 @Entity
 public class Event {
     @Id
@@ -28,6 +29,7 @@ public class Event {
     private Integer capacity;
 
     @ManyToOne
+    @JoinColumn(name = "organizer_id", nullable = false)
     private User organizer;
 
     private LocalDateTime createdAt;

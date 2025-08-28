@@ -6,6 +6,7 @@ import com.imad.eventify.model.DTOs.UpdateEventDTO;
 import com.imad.eventify.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class EventController {
     }
 
     // Create new event
+    @PreAuthorize("hasAnyRole('ORGANIZER','ADMIN')") // Only Organizers and Admins Can Create Events
     @PostMapping("/")
     public ResponseEntity<EventResponseDTO> createEvent(@RequestBody EventCreationRequest eventDTO) {
         EventResponseDTO createdEvent = eventService.createEvent(eventDTO);
