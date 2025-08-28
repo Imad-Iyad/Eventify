@@ -1,9 +1,9 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.Exceptions.AccessDeniedException;
 import com.imad.eventify.Exceptions.EventNotFoundException;
-import com.imad.eventify.Exceptions.UserNotFoundException;
-import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
+import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
 import com.imad.eventify.model.entities.Registration;
@@ -16,7 +16,9 @@ import com.imad.eventify.repositories.RegistrationRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.RegistrationService;
+import com.imad.eventify.services.UserService;
 import com.imad.eventify.utils.QRCodeGenerator;
+import com.imad.eventify.utils.UserValidator;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +37,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final InvitationRepository invitationRepository;
     private final RegistrationMapper registrationMapper;
     private final EmailService emailService;
+    private final UserService userService;
 
     // for both private and public events
     @Override
     @Transactional
     public RegistrationResDTO registerToEvent(RegistrationDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getUserId()));
+        User user = userService.getCurrentUserEntity();
+        UserValidator.assertUserIsActive(user);
 
         Event event = eventRepository.findById(dto.getEventId())
                 .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + dto.getEventId()));
@@ -108,6 +111,12 @@ public class RegistrationServiceImpl implements RegistrationService {
     public RegistrationResDTO getRegistrationByToken(String token) {
         Registration registration = registrationRepository.findByRegistrationToken(token)
                 .orElseThrow(() -> new RuntimeException("Registration not found with token: " + token));
+
+        if (!registration.getUser().getId().equals(userService.getCurrentUserEntity().getId())) {
+            throw new AccessDeniedException("You are not allowed to access this registration");
+        }
+
+        UserValidator.assertUserIsActive(registration.getUser());
         return registrationMapper.toDTO(registration);
     }
 

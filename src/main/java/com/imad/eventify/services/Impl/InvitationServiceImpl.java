@@ -2,6 +2,7 @@ package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.Exceptions.EventNotFoundException;
 import com.imad.eventify.model.DTOs.InvitationResponseDTO;
+import com.imad.eventify.Exceptions.AccessDeniedException;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
@@ -13,6 +14,8 @@ import com.imad.eventify.repositories.InvitationRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.InvitationService;
+import com.imad.eventify.services.UserService;
+import com.imad.eventify.utils.UserValidator;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepository invitationRepository;
     private final EmailService emailService;
+    private final UserService userService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final InvitationMapper invitationMapper;
@@ -39,8 +43,16 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     @Transactional
     public InvitationResponseDTO sendInvitation(Long eventId, String email) {
+        User currentUser = userService.getCurrentUserEntity();
+        UserValidator.assertUserIsActive(currentUser);
+
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event with id: " + eventId + " not found"));
+
+        if (!event.getOrganizer().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not allowed to invite users to this event");
+        }
+
         Invitation invitation = Invitation.builder()
                 .event(event)
                 .email(email)
@@ -71,8 +83,12 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = invitationRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired invitation token"));
 
+        // Security check: only the invitee can use this token
+        if (!invitation.getEmail().equals(user.getEmail())) {
+            throw new AccessDeniedException("You are not allowed to access this invitation");
+        }
+
         return RegistrationDTO.builder()
-                .userId(user.getId())
                 .eventId(invitation.getEvent().getId())
                 .invitationId(invitation.getId())
                 .inviteeEmail(invitation.getEmail())
