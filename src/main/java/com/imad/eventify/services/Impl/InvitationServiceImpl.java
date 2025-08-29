@@ -76,12 +76,12 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public RegistrationDTO getInvitationByToken(String token, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    public RegistrationDTO getInvitationByToken(String token) {
+        User user = userService.getCurrentUserEntity();
         Invitation invitation = invitationRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired invitation token"));
+
+        UserValidator.assertUserIsActive(user);
 
         // Security check: only the invitee can use this token
         if (!invitation.getEmail().equals(user.getEmail())) {

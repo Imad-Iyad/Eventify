@@ -1,14 +1,12 @@
 package com.imad.eventify.controllers;
 
-import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
+import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.services.InvitationService;
 import com.imad.eventify.services.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -83,9 +81,7 @@ public class RegistrationController {
      *   (ensuring security).
      */
     @GetMapping("/by-invitation/{token}")
-    public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(
-            @PathVariable String token,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(invitationService.getInvitationByToken(token, userDetails));
+    public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(@PathVariable String token) {
+        return ResponseEntity.ok(invitationService.getInvitationByToken(token));
     }
 }
