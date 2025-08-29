@@ -7,6 +7,7 @@ import com.imad.eventify.services.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class RegistrationController {
      * @param registrationDTO DTO containing userId, eventId, and optionally invitationId.
      * @return The created Registration details.
      */
+    @PreAuthorize("hasRole('ATTENDEE') or hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<RegistrationResDTO> registerForEvent(@RequestBody RegistrationDTO registrationDTO) {
         RegistrationResDTO createdRegistration = registrationService.registerToEvent(registrationDTO);
@@ -36,6 +38,7 @@ public class RegistrationController {
      * @param token The unique token generated during registration.
      * @return The registration details.
      */
+    // Check inside the service
     @GetMapping("/{token}")
     public ResponseEntity<RegistrationResDTO> getRegistrationByToken(@PathVariable String token) {
         RegistrationResDTO registrationResDTO = registrationService.getRegistrationByToken(token);
@@ -45,12 +48,12 @@ public class RegistrationController {
     /**
      * Endpoint: GET /by-invitation/{token}
 
-     * 🎯 Purpose:
+     *  Purpose:
      * ------------
      * This endpoint is used when an invitee clicks on the invitation link
      * (which contains a unique token).
 
-     * ✅ Requirements:
+     *  Requirements:
      * ----------------
      * - The user must be authenticated (logged in).
      *   - If the user is not logged in, the frontend must redirect them to
@@ -58,7 +61,7 @@ public class RegistrationController {
      * - Once authenticated, this endpoint will provide the required
      *   registration details to proceed.
 
-     * 🔄 Flow:
+     *  Flow:
      * --------
      * 1. The invitee clicks the invitation link `/by-invitation/{token}` from their email.
      * 2. If the user is not logged in → frontend redirects them to the login/sign-up page.
@@ -73,13 +76,14 @@ public class RegistrationController {
      *        - inviteeEmail: the email of the invitee (from the invitation).
      *        - attendanceConfirmed: false (default).
 
-     * 📝 Notes for Frontend:
+     *  Notes for Frontend:
      * ----------------------
      * - After receiving this DTO, the frontend should display the registration form
      *   so the invitee can confirm attendance or fill in additional required details.
      * - The frontend should not manually provide userId → it must come from the session
      *   (ensuring security).
      */
+    // Check inside the service
     @GetMapping("/by-invitation/{token}")
     public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(@PathVariable String token) {
         return ResponseEntity.ok(invitationService.getInvitationByToken(token));

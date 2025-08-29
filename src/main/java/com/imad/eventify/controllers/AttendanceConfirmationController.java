@@ -5,6 +5,7 @@ import com.imad.eventify.model.DTOs.AttendanceConfirmationResDTO;
 import com.imad.eventify.services.AttendanceConfirmationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class AttendanceConfirmationController {
      * @param requestDTO DTO containing the registration token (from QR code).
      * @return Attendance confirmation details.
      */
+    @PreAuthorize("hasRole('ATTENDEE') or hasRole('ADMIN')")
     @PostMapping("/confirm")
     public ResponseEntity<AttendanceConfirmationResDTO> confirmAttendance(
             @RequestBody AttendanceConfirmationReqDTO requestDTO) {

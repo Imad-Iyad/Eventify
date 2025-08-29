@@ -19,7 +19,7 @@ public class EventController {
     private final EventService eventService;
 
     // Get all events
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<EventResponseDTO>> getAllEvents() {
         List<EventResponseDTO> events = eventService.getAllEvents();
         return ResponseEntity.ok(events);
@@ -32,7 +32,7 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    // Create new event
+    // Any Organizer Can Create new event
     @PreAuthorize("hasAnyRole('ORGANIZER','ADMIN')") // Only Organizers and Admins Can Create Events
     @PostMapping("/")
     public ResponseEntity<EventResponseDTO> createEvent(@RequestBody EventCreationRequest eventDTO) {
@@ -40,14 +40,16 @@ public class EventController {
         return ResponseEntity.status(201).body(createdEvent);
     }
 
-    // Update event
+    // Only The Organizer Who Have The Event Can Update it
+    @PreAuthorize("hasRole('ADMIN') or @eventSecurity.isOrganizer(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(@PathVariable("id") Long id, @RequestBody UpdateEventDTO updateEventDTO) {
         EventResponseDTO updatedEvent = eventService.updateEvent(id, updateEventDTO);
         return ResponseEntity.ok(updatedEvent);
     }
 
-    // Delete event
+    // // Only The Organizer Who Have The Event Can Delete it
+    @PreAuthorize("hasRole('ADMIN') or @eventSecurity.isOrganizer(#id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable("id") Long id) {
         eventService.deleteEvent(id);
