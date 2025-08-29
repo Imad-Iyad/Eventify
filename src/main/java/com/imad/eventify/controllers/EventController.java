@@ -34,7 +34,7 @@ public class EventController {
 
     // Any Organizer Can Create new event
     @PreAuthorize("hasAnyRole('ORGANIZER','ADMIN')") // Only Organizers and Admins Can Create Events
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<EventResponseDTO> createEvent(@RequestBody EventCreationRequest eventDTO) {
         EventResponseDTO createdEvent = eventService.createEvent(eventDTO);
         return ResponseEntity.status(201).body(createdEvent);
