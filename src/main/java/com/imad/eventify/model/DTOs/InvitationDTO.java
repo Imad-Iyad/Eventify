@@ -20,5 +20,3 @@ public class InvitationDTO {
     private LocalDateTime sentAt;
     private LocalDateTime usedAt;
 }
-
-//للدعوات المرسلة في الفعاليات الخاصة فقط.

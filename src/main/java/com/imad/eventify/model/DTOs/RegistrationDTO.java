@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class RegistrationDTO {
     private Long eventId;
     private Long invitationId;
-    private String inviteeEmail;
+ // private String inviteeEmail;
 }

@@ -21,7 +21,7 @@ public class RegistrationController {
      * Endpoint to register a user for an event.
      * This handles both public registrations and private ones via invitation.
      *
-     * @param registrationDTO DTO containing userId, eventId, and optionally invitationId.
+     * @param registrationDTO DTO containing eventId, and optionally invitationId.
      * @return The created Registration details.
      */
     @PreAuthorize("hasRole('ATTENDEE') or hasRole('ADMIN')")

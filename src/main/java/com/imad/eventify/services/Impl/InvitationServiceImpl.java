@@ -1,8 +1,8 @@
 package com.imad.eventify.services.Impl;
 
+import com.imad.eventify.Exceptions.AccessDeniedException;
 import com.imad.eventify.Exceptions.EventNotFoundException;
 import com.imad.eventify.model.DTOs.InvitationResponseDTO;
-import com.imad.eventify.Exceptions.AccessDeniedException;
 import com.imad.eventify.model.DTOs.RegistrationDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.Invitation;
@@ -19,7 +19,6 @@ import com.imad.eventify.utils.UserValidator;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,7 +90,6 @@ public class InvitationServiceImpl implements InvitationService {
         return RegistrationDTO.builder()
                 .eventId(invitation.getEvent().getId())
                 .invitationId(invitation.getId())
-                .inviteeEmail(invitation.getEmail())
                 .build();
     }
 }

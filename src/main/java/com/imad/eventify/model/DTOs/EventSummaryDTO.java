@@ -17,4 +17,3 @@ public class EventSummaryDTO {
     private LocalDateTime dateTime;
     private boolean isPublic;
 }
-//للعرض السريع لفعاليات المستخدم (بدون التفاصيل الثقيلة).

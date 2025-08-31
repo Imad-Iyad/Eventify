@@ -29,6 +29,7 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean active = true;
 }

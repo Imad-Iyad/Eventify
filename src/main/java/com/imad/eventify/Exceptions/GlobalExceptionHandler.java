@@ -50,6 +50,32 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.FORBIDDEN, "Forbidden", ex.getMessage(), request.getRequestURI());
     }
 
+    // 🔹 Registration custom exceptions
+    @ExceptionHandler(InvalidRegistrationException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidRegistration(InvalidRegistrationException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid Registration", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(UserAlreadyRegisteredException.class)
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyRegistered(UserAlreadyRegisteredException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, "Already Registered", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvitationNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleInvitationNotFound(InvitationNotFoundException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.NOT_FOUND, "Invitation Not Found", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvitationAlreadyUsedException.class)
+    public ResponseEntity<Map<String, Object>> handleInvitationAlreadyUsed(InvitationAlreadyUsedException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, "Invitation Already Used", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(EmailSendFailedException.class)
+    public ResponseEntity<Map<String, Object>> handleEmailSendFailed(EmailSendFailedException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Email Send Failed", ex.getMessage(), request.getRequestURI());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something went wrong. Please try again later.", request.getRequestURI());
