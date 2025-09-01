@@ -1,3 +1,49 @@
 spring:
-  profiles:
-    active: prod
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
+    username: postgres.rcizpwzzxnnltpiwhqqa
+    password: eventify2025$$
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: emadeyad063@gmail.com
+    password: opsdfbxsacgmhqij
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        transport:
+          protocol: smtp
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  application:
+    name: 'Eventify'
+
+server :
+  port: 8091
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    org.springframework.web: DEBUG
+app:
+  base-url : http://localhost:8091
