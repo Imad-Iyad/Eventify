@@ -1,24 +1,26 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
-    username: postgres.rcizpwzzxnnltpiwhqqa
-    password: eventify2025$$
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: emadeyad063@gmail.com
-    password: opsdfbxsacgmhqij
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls.enable: true
+    datasource:
+      url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+      username: "${DB_USER}"
+      password: "${DB_PASSWORD}"
+      driver-class-name: org.postgresql.Driver
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: false
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: "${MAIL_USER}"
+      password: "${MAIL_PASS}"
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls.enable: true
 
 server:
   port: 8080
