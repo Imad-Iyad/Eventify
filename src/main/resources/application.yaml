@@ -1,28 +1,42 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
-    username: "${DB_USER}"
-    password: "${DB_PASSWORD}"
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: "${MAIL_USER}"
-    password: "${MAIL_PASS}"
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          starttls.enable: true
+          starttls:
+            enable: true
+            required: true
+        transport:
+          protocol: smtp
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  application:
+    name: 'Eventify'
+
+server:
+  port: ${PORT:8091}
 
 springdoc:
   api-docs:
@@ -30,8 +44,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui/index.html
 
-server:
-  port: 8080
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    org.springframework.web: DEBUG
 
 app:
-  base-url: ${APP_BASE_URL}
+  base-url: ${BASE_URL:http://localhost:8091}
