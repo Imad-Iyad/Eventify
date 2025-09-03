@@ -48,6 +48,9 @@ logging:
   level:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
+    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR
+    org.springframework.core.env: DEBUG
+
 
 app:
   base-url: ${BASE_URL:http://localhost:8091}
