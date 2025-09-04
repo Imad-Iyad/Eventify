@@ -1,9 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
-    username: postgres.rcizpwzzxnnltpiwhqqa
-    password: eventify2025$$
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,11 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: emadeyad063@gmail.com
-    password: opsdfbxsacgmhqij
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -25,6 +27,7 @@ spring:
             required: true
         transport:
           protocol: smtp
+
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -32,7 +35,7 @@ spring:
   application:
     name: 'Eventify'
 
-server :
+server:
   port: ${PORT:8091}
 
 springdoc:
@@ -45,5 +48,6 @@ logging:
   level:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
+
 app:
-  base-url : https://eventify-uq0f.onrender.com
+  base-url: https://eventify-uq0f.onrender.com
