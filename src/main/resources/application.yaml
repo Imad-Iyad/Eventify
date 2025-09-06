@@ -4,6 +4,7 @@ spring:
     username: postgres.rcizpwzzxnnltpiwhqqa
     password: eventify2025$$
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,6 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -25,6 +27,7 @@ spring:
             required: true
         transport:
           protocol: smtp
+
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -33,7 +36,7 @@ spring:
     name: 'Eventify'
 
 server :
-  port: 8091
+  port: 8080
 
 springdoc:
   api-docs:
@@ -46,4 +49,4 @@ logging:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
 app:
-  base-url : http://localhost:8091
+  base-url : https://eventify-uq0f.onrender.com
