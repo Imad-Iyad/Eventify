@@ -1,8 +1,5 @@
 spring:
   datasource:
-    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
-    username: postgres.rcizpwzzxnnltpiwhqqa
-    password: eventify2025$$
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,10 +11,6 @@ spring:
         format_sql: true
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: emadeyad063@gmail.com
-    password: opsdfbxsacgmhqij
     properties:
       mail:
         smtp:
