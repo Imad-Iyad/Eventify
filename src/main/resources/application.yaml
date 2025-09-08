@@ -4,6 +4,10 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      data-source-properties:
+        sslmode: require
 
   jpa:
     hibernate:
@@ -12,6 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    open-in-view: false
 
   mail:
     host: ${SPRING_MAIL_HOST}
@@ -25,6 +30,8 @@ spring:
           starttls:
             enable: true
             required: true
+          ssl:
+            trust: smtp.gmail.com
         transport:
           protocol: smtp
 
@@ -35,8 +42,8 @@ spring:
   application:
     name: 'Eventify'
 
-server :
-  port: 8080
+server:
+  port: ${PORT:8080}
 
 springdoc:
   api-docs:
@@ -48,5 +55,6 @@ logging:
   level:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
+
 app:
-  base-url : https://eventify-uq0f.onrender.com
+  base-url: https://eventify-uq0f.onrender.com
