@@ -68,7 +68,7 @@ To build and install Eventify, follow these steps:
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/YourUsername/Eventify
+    git clone https://github.com/Imad-Iyad/Eventify
     ```
 
 2. **Navigate to the project directory:**
@@ -80,7 +80,7 @@ To build and install Eventify, follow these steps:
 
     **Using `docker`:**
     ```sh
-    docker build -t yourusername/eventify .
+    docker build -t Imad-Iyad/eventify .
     ```
 
     **Using `maven`:**
