@@ -1,13 +1,10 @@
 spring:
+
   datasource:
     url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
     username: postgres.rcizpwzzxnnltpiwhqqa
     password: eventify2025$$
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 5
-      data-source-properties:
-        sslmode: require
 
   jpa:
     hibernate:
@@ -16,7 +13,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    open-in-view: false
 
   mail:
     host: smtp.gmail.com
@@ -30,8 +26,6 @@ spring:
           starttls:
             enable: true
             required: true
-          ssl:
-            trust: smtp.gmail.com
         transport:
           protocol: smtp
 
@@ -49,12 +43,11 @@ springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
-    path: /swagger-ui/index.html
+    path: /index.html
 
 logging:
   level:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
-
 app:
   base-url: https://eventify-uq0f.onrender.com
