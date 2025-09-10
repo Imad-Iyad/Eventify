@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres
+    username: postgres.rcizpwzzxnnltpiwhqqa
+    password: eventify2025$$
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
@@ -19,10 +19,10 @@ spring:
     open-in-view: false
 
   mail:
-    host: ${SPRING_MAIL_HOST}
-    port: ${SPRING_MAIL_PORT}
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: emadeyad063@gmail.com
+    password: opsdfbxsacgmhqij
     properties:
       mail:
         smtp:
@@ -43,7 +43,7 @@ spring:
     name: 'Eventify'
 
 server:
-  port: ${PORT:8080}
+  port: 8080
 
 springdoc:
   api-docs:
