@@ -4,15 +4,19 @@ import com.imad.eventify.model.DTOs.RegistrationDTO;
 import com.imad.eventify.model.DTOs.RegistrationResDTO;
 import com.imad.eventify.services.InvitationService;
 import com.imad.eventify.services.RegistrationService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/registrations")
 @RequiredArgsConstructor
+@Validated
 public class RegistrationController {
 
     private final InvitationService invitationService;
@@ -26,7 +30,7 @@ public class RegistrationController {
      */
     @PreAuthorize("hasRole('ATTENDEE') or hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<RegistrationResDTO> registerForEvent(@RequestBody RegistrationDTO registrationDTO) {
+    public ResponseEntity<RegistrationResDTO> registerForEvent(@RequestBody @Valid RegistrationDTO registrationDTO) {
         RegistrationResDTO createdRegistration = registrationService.registerToEvent(registrationDTO);
         return new ResponseEntity<>(createdRegistration, HttpStatus.CREATED);
     }
@@ -40,7 +44,7 @@ public class RegistrationController {
      */
     // Check inside the service
     @GetMapping("/{token}")
-    public ResponseEntity<RegistrationResDTO> getRegistrationByToken(@PathVariable String token) {
+    public ResponseEntity<RegistrationResDTO> getRegistrationByToken(@PathVariable @NotBlank(message = "Token cannot be blank") String token) {
         RegistrationResDTO registrationResDTO = registrationService.getRegistrationByToken(token);
         return ResponseEntity.ok(registrationResDTO);
     }
@@ -85,7 +89,7 @@ public class RegistrationController {
      */
     // Check inside the service
     @GetMapping("/by-invitation/{token}")
-    public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(@PathVariable String token) {
+    public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(@PathVariable @NotBlank(message = "Token cannot be blank")  String token) {
         return ResponseEntity.ok(invitationService.getInvitationByToken(token));
     }
 }

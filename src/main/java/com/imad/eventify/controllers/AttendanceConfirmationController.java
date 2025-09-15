@@ -3,6 +3,7 @@ package com.imad.eventify.controllers;
 import com.imad.eventify.model.DTOs.AttendanceConfirmationReqDTO;
 import com.imad.eventify.model.DTOs.AttendanceConfirmationResDTO;
 import com.imad.eventify.services.AttendanceConfirmationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ public class AttendanceConfirmationController {
     @PreAuthorize("hasRole('ATTENDEE') or hasRole('ADMIN')")
     @PostMapping("/confirm")
     public ResponseEntity<AttendanceConfirmationResDTO> confirmAttendance(
-            @RequestBody AttendanceConfirmationReqDTO requestDTO) {
+            @RequestBody @Valid AttendanceConfirmationReqDTO requestDTO) {
         return ResponseEntity.ok(confirmationService.confirmAttendance(requestDTO));
     }
 }
