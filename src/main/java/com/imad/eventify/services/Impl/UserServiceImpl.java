@@ -1,6 +1,5 @@
 package com.imad.eventify.services.Impl;
 
-import com.imad.eventify.Exceptions.EmailAlreadyExistsException;
 import com.imad.eventify.model.DTOs.RegisterRequest;
 import com.imad.eventify.model.DTOs.UserDTO;
 import com.imad.eventify.model.DTOs.UserResponseDTO;
@@ -66,11 +65,11 @@ public class UserServiceImpl implements UserService {
         User existing = getCurrentUserEntity();
         UserValidator.assertUserIsActive(existing);
 
-        // If the email changes, verify the uniqueness
+        /*// If the email changes, verify the uniqueness
         if (userDTO.getEmail() != null && !existing.getEmail().equals(userDTO.getEmail()) &&
                 userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email " + userDTO.getEmail() + " is already in use");
-        }
+        }*/
 
         //Partial Update Using MapStruct
         userMapper.updateUserFromDto(userDTO, existing);

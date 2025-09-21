@@ -28,6 +28,9 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private boolean verified = false;
+
     @Builder.Default
     @Column(nullable = false)
     private boolean active = true;
