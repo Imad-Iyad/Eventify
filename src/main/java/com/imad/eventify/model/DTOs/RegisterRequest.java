@@ -1,10 +1,7 @@
 package com.imad.eventify.model.DTOs;
 
 import com.imad.eventify.model.entities.enums.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
@@ -25,6 +22,6 @@ public class RegisterRequest {
     )
     private String password;
 
-    @NotBlank(message = "Role is required")
+    @NotNull(message = "Role is required")
     private Role role; // ADMIN, ORGANIZER, ATTENDEE
 }
