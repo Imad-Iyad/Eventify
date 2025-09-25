@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
                 "<a href=\"" + invitationLink + "\">Confirm Invitation</a>";
 
         String emailJson = "{\n" +
-                "\"from\": \"your-email@yourdomain.com\",\n" +
+                "\"from\": \"noreply@imadapps.com\",\n" +
                 "\"to\": [\"" + to + "\"],\n" +
                 "\"subject\": \"You're invited to: " + eventName + "\",\n" +
                 "\"html\": \"" + htmlContent + "\"\n" +
@@ -61,7 +61,7 @@ public class EmailServiceImpl implements EmailService {
                 "<img src=\"data:image/png;base64," + qrCodeBase64 + "\" />";
 
         String emailJson = "{\n" +
-                "\"from\": \"your-email@yourdomain.com\",\n" +
+                "\"from\": \"noreply@imadapps.com\",\n" +
                 "\"to\": [\"" + to + "\"],\n" +
                 "\"subject\": \"Registration confirmed: " + eventName + "\",\n" +
                 "\"html\": \"" + htmlContent + "\"\n" +
@@ -73,7 +73,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail(String to, String subject, String body) {
         String emailJson = "{\n" +
-                "\"from\": \"your-email@yourdomain.com\",\n" +
+                "\"from\": \"noreply@imadapps.com\",\n" +
                 "\"to\": [\"" + to + "\"],\n" +
                 "\"subject\": \"" + subject + "\",\n" +
                 "\"text\": \"" + body + "\"\n" +

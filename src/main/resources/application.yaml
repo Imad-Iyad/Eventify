@@ -14,20 +14,20 @@ spring:
       hibernate:
         format_sql: true
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: emadeyad063@gmail.com
-    password: opsdfbxsacgmhqij
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-        transport:
-          protocol: smtp
+#  mail:
+ #   host: smtp.gmail.com
+  #  port: 587
+   # username: emadeyad063@gmail.com
+  #  password: opsdfbxsacgmhqij
+  #  properties:
+   #   mail:
+    #    smtp:
+     #     auth: true
+       #   starttls:
+      #      enable: true
+       #     required: true
+        #transport:
+        #  protocol: smtp
 
   jackson:
     serialization:
@@ -55,3 +55,4 @@ app:
 resend:
   api:
     key: re_LbMCqh1D_CPJXD5Um3jq5jrcctPtZkssj
+  from: noreply@imadapps.com
