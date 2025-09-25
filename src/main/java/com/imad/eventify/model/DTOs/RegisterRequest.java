@@ -1,6 +1,7 @@
 package com.imad.eventify.model.DTOs;
 
 import com.imad.eventify.model.entities.enums.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -22,6 +23,7 @@ public class RegisterRequest {
     )
     private String password;
 
+    @Schema(allowableValues = {"ADMIN", "ORGANIZER", "ATTENDEE"})
     @NotNull(message = "Role is required")
     private Role role; // ADMIN, ORGANIZER, ATTENDEE
 }

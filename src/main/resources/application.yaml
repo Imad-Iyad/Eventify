@@ -50,4 +50,8 @@ logging:
     org.springframework.mail: DEBUG
     org.springframework.web: DEBUG
 app:
-  base-url: https://eventify-uq0f.onrender.com
+  base-url: https://imadapps.com
+
+resend:
+  api:
+    key: re_LbMCqh1D_CPJXD5Um3jq5jrcctPtZkssj
