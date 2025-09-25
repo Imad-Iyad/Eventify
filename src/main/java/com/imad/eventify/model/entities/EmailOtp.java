@@ -27,5 +27,6 @@ public class EmailOtp {
 
     private LocalDateTime expiresAt;
 
+    @Builder.Default
     private boolean used = false;
 }

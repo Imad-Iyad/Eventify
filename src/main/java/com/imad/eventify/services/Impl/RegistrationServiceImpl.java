@@ -17,7 +17,6 @@ import com.imad.eventify.services.RegistrationService;
 import com.imad.eventify.services.UserService;
 import com.imad.eventify.utils.QRCodeGenerator;
 import com.imad.eventify.utils.UserValidator;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -174,7 +173,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         // Send confirmation email with QR
         try {
             emailService.sendRegistrationConfirmation(user.getEmail(), event.getTitle(), qrCode);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             throw new EmailSendFailedException("Failed to send registration confirmation email", e);
         }
 

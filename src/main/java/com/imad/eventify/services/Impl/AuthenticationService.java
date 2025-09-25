@@ -11,7 +11,6 @@ import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.security.JwtService;
 import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.UserService;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +77,7 @@ public class AuthenticationService {
                     emailService.sendEmail(existingUser.getEmail(),
                             "Verify your Eventify account",
                             "Your New OTP is: " + otp + "\nValid for 24 hours.");
-                } catch (MessagingException e) {
+                } catch (RuntimeException e) {
                     throw new RuntimeException("Failed to send OTP email", e);
                 }
 
@@ -109,7 +108,7 @@ public class AuthenticationService {
             emailService.sendEmail(newUser.getEmail(),
                     "Verify your Eventify account",
                     "Your OTP is: " + otp + "\nValid for 24 hours.");
-        } catch (MessagingException e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("Failed to send OTP email", e);
         }
 
@@ -208,7 +207,7 @@ public class AuthenticationService {
                         "Your new OTP code",
                         "Your OTP code has expired. Here is a new one: " + newOtp.getOtpCode()
                 );
-            } catch (MessagingException e) {
+            } catch (RuntimeException e) {
                 throw new RuntimeException("OTP expired. Failed to send OTP email");
             }
 
@@ -274,7 +273,7 @@ public class AuthenticationService {
                     "Your new OTP code",
                     "Here is your new OTP: " + otp
             );
-        } catch (MessagingException e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("Failed to send OTP email", e);
         }
     }

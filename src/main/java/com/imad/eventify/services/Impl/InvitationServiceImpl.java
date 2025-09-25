@@ -16,7 +16,6 @@ import com.imad.eventify.services.EmailService;
 import com.imad.eventify.services.InvitationService;
 import com.imad.eventify.services.UserService;
 import com.imad.eventify.utils.UserValidator;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,7 +66,7 @@ public class InvitationServiceImpl implements InvitationService {
         // HTML
         try {
             emailService.sendInvitationEmail(email, event.getTitle(), link);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to send invitation email", e);
         }
 
