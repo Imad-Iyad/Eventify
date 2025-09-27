@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${resend.api.key}")  // API key من التطبيق
-    private String apiKey; // API Key من Resend
+    @Value("${resend.api.key}")
+    private String apiKey; // API Key from Resend
 
     private static final String RESEND_URL = "https://api.resend.com/v1/emails";
 
