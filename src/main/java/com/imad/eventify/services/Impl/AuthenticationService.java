@@ -34,21 +34,21 @@ public class AuthenticationService {
     /**
      * User Registration: creates an unverified account and sends OTP
      * User Registration Endpoint Scenarios:
-     *
+
      * 1. New user (email not in use):
      *    - A new user is created with verified = false.
      *    - An OTP is generated and sent to the user's email.
      *    - Response: OTP sent to your email. Please verify before login. (no token yet).
      *    - front-end should call the verifyOtp-Endpoint
-     *
+
      * 2. Email already in use (verified user exists):
      *    - Throws IllegalArgumentException("Email already in use").
-     *
+
      * 3. Email exists but user is not verified:
      *    - The OTP verification process should be triggered again.
      *    - A new OTP may be generated and sent.
      *    - front-end should redirect user to New-OTP verification page
-     *
+
      * This ensures duplicate verified users cannot exist, while unverified users
      * are guided to complete verification before using the system.
      */
@@ -125,21 +125,21 @@ public class AuthenticationService {
     /**
      * User Login: only verified users can log in
      * User Authentication Endpoint Scenarios:
-     *
+
      * 1. Valid credentials & verified + active user:
      *    - Authentication succeeds.
      *    - A JWT token is generated and returned in the response.
-     *
+
      * 2. Invalid credentials (wrong email or password):
      *    - Throws IllegalArgumentException("Invalid email or password").
-     *
+
      * 3. Inactive user (user.isActive() == false):
      *    - Throws InactiveUserException("Sorry, Inactive user").
-     *
+
      * 4. Unverified user (user.isVerified() == false):
      *    - Throws IllegalStateException("Please verify your email before login.").
      *    - The front-end should redirect the user to the OTP verification page and call (verifyOtp) Endpoint
-     *
+
      * This ensures only active and verified users can log in and receive a JWT.
      */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -165,21 +165,21 @@ public class AuthenticationService {
 
     /**
      * Verify OTP Endpoint Scenarios:
-     *
+
      * 1. Valid OTP (not expired, not used):
      *    - The OTP is marked as used.
      *    - The user account is marked as verified.
      *    - A JWT token is generated and returned in the response.
-     *
+
      * 2. Invalid OTP (wrong code or already used):
      *    - An error is returned with the message "Invalid OTP".
-     *
+
      * 3. Expired OTP:
      *    - A new OTP is generated and stored in the database.
      *    - The new OTP is sent to the user's email.
      *    - An error is returned with the message "OTP expired. A new code has been sent to your email."
      *    - front-end should open the OTP-page again to enter the newOtp
-     *
+
      * This ensures that only verified users can access the system while
      * providing a smooth and secure verification flow.
      */
@@ -227,22 +227,22 @@ public class AuthenticationService {
 
     /** Resend button
      * Resend OTP for email verification.
-     *
+
      * This method allows a user to request a new OTP before entering any code,
      * or if they want a fresh OTP without using the previous one.
-     *
+
      * Scenarios:
      * 1. User exists and not verified:
      *    - Generates a new OTP and stores it in the database.
      *    - Sends the OTP via email.
      *    - Returns a message: "A new OTP has been sent to your email."
-     *
+
      * 2. User does not exist:
      *    - Throws IllegalArgumentException("User not found").
-     *
+
      * 3. User already verified:
      *    - Throws IllegalStateException("User already verified").
-     *
+
      * Notes:
      * - Always generates a new OTP, independent of any existing OTPs.
      * - Frontend should allow user to request a new OTP freely.

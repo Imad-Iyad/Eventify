@@ -1,7 +1,6 @@
 package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.services.EmailService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,8 +8,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${resend.api.key}")
-    private String apiKey; // API Key from Resend
+    //@Value("${resend.api.key}")
+    private final  String apiKey = "re_NTdTvbBH_BSmXBHDNoaPz1DrLWB9BM8LK"; // API Key from Resend
 
     private static final String RESEND_URL = "https://api.resend.com/v1/emails";
 
