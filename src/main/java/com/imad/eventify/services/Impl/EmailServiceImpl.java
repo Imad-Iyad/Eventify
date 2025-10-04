@@ -5,106 +5,95 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    //@Value("${resend.api.key}")
-    private final  String apiKey = "re_NTdTvbBH_BSmXBHDNoaPz1DrLWB9BM8LK"; // API Key from Resend
+    //@Value("${RESEND_API_KEY}")
+    private final String apiKey = "re_NTdTvbBH_BSmXBHDNoaPz1DrLWB9BM8LK"; // API Key from Resend
 
-    private static final String RESEND_URL = "https://api.resend.com/v1/emails";
+    //@Value("${RESEND_FROM:noreply@imadapps.com}")
+    private final String from = "noreply@imadapps.com";
+
+    private static final String RESEND_URL = "https://api.resend.com/emails";
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
 
     @Override
     public void sendInvitationEmail(String to, String eventName, String invitationLink) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String html = """
+            <h2>You are invited to %s 🎉</h2>
+            <p>Click the link below to confirm your invitation:</p>
+            <a href="%s">Confirm Invitation</a>
+            """.formatted(eventName, invitationLink);
 
-        String htmlContent = "<h2>You are invited to " + eventName + " 🎉</h2>" +
-                "<p>Click the link below to confirm your invitation:</p>" +
-                "<a href=\"" + invitationLink + "\">Confirm Invitation</a>";
-
-        String emailJson = "{\n" +
-                "\"from\": \"noreply@imadapps.com\",\n" +
-                "\"to\": [\"" + to + "\"],\n" +
-                "\"subject\": \"You're invited to: " + eventName + "\",\n" +
-                "\"html\": \"" + htmlContent + "\"\n" +
-                "}";
-
-        HttpEntity<String> entity = new HttpEntity<>(emailJson, headers);
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(RESEND_URL, HttpMethod.POST, entity, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                // إذا كانت الاستجابة ناجحة (رمز حالة 2xx)
-                System.out.println("Email sent successfully.");
-            } else {
-                // إذا كانت الاستجابة فاشلة
-                System.err.println("Failed to send email: " + response.getBody());
-                // هنا يمكن إضافة بعض إجراءات المعالجة مثل إرسال تنبيه أو تسجيل الخطأ
-            }
-        } catch (Exception e) {
-            // في حالة حدوث خطأ أثناء إرسال الطلب
-            System.err.println("Error sending email: " + e.getMessage());
-            // هنا يمكن إضافة إجراءات لإعادة المحاولة أو إرسال تنبيه
-        }
+        sendEmail(to, "You're invited to: " + eventName, html, "You are invited to " + eventName + ". Link: " + invitationLink);
     }
 
     @Override
     public void sendRegistrationConfirmation(String to, String eventName, byte[] qrCode) {
-        String qrCodeBase64 = encodeToBase64(qrCode); // تحويل QR Code إلى Base64
-
-        String htmlContent = "<h2>Your registration for " + eventName + " is confirmed ✅</h2>" +
-                "<p>Scan the QR code below at the event entrance:</p>" +
-                "<img src=\"data:image/png;base64," + qrCodeBase64 + "\" />";
-
-        String emailJson = "{\n" +
-                "\"from\": \"noreply@imadapps.com\",\n" +
-                "\"to\": [\"" + to + "\"],\n" +
-                "\"subject\": \"Registration confirmed: " + eventName + "\",\n" +
-                "\"html\": \"" + htmlContent + "\"\n" +
-                "}";
-
-        sendEmailWithResendApi(emailJson);
+        String qrB64 = java.util.Base64.getEncoder().encodeToString(qrCode);
+        String html = """
+            <h2>Your registration for %s is confirmed ✅</h2>
+            <p>Scan the QR code below at the event entrance:</p>
+            <img src="data:image/png;base64,%s" />
+            """.formatted(eventName, qrB64);
+        sendEmail(to, "Registration confirmed: " + eventName, html, "Registration confirmed for " + eventName);
     }
 
     @Override
-    public void sendEmail(String to, String subject, String body) {
-        String emailJson = "{\n" +
-                "\"from\": \"noreply@imadapps.com\",\n" +
-                "\"to\": [\"" + to + "\"],\n" +
-                "\"subject\": \"" + subject + "\",\n" +
-                "\"text\": \"" + body + "\"\n" +
-                "}";
-
-        sendEmailWithResendApi(emailJson);
+    public void sendEmail(String to, String subject, String bodyTextOnly) {
+        sendEmail(to, subject, "<p>" + bodyTextOnly + "</p>", bodyTextOnly);
     }
 
-    private void sendEmailWithResendApi(String emailJson) {
-        RestTemplate restTemplate = new RestTemplate();
+    private void sendEmail(String to, String subject, String html, String textFallback) {
+        // ابنِ الجسم كـ Map لتفادي مشاكل الهروب/الاقتباسات
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("from", from);                 // يجب أن يكون على دومين مُفعّل في Resend
+        payload.put("to", List.of(to));
+        payload.put("subject", subject);
+        payload.put("html", html);
+        payload.put("text", textFallback);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
+        headers.setBearerAuth(apiKey);             // Authorization: Bearer re_...
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> entity = new HttpEntity<>(emailJson, headers);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(RESEND_URL, HttpMethod.POST, entity, String.class);
+            ResponseEntity<String> res = restTemplate.exchange(RESEND_URL, HttpMethod.POST, entity, String.class);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("Email sent successfully.");
+            // اطبع دائمًا الحالة والجسم للتشخيص
+            System.out.println("Resend status=" + res.getStatusCode().value());
+            System.out.println("Resend body=" + res.getBody());
+
+            if (res.getStatusCode().is2xxSuccessful()) {
+                // استخرج messageId
+                String id = extractId(res.getBody());
+                System.out.println("Resend messageId=" + id);
+                // احفظ id في DB لو عندك جدول Notifications/Emails
             } else {
-                System.err.println("Failed to send email: " + response.getBody());
-                // إجراءات لمعالجة الخطأ مثل إعادة المحاولة أو إرسال تنبيه
+                System.err.println("Failed to send email: " + res.getBody());
             }
         } catch (Exception e) {
             System.err.println("Error sending email: " + e.getMessage());
-            // معالجة الأخطاء مثل إعادة المحاولة أو إرسال تنبيه
         }
     }
 
-    private String encodeToBase64(byte[] data) {
-        return java.util.Base64.getEncoder().encodeToString(data);
+    // استخراج سريع لل id
+    private String extractId(String body) {
+        if (body == null) return null;
+        int i = body.indexOf("\"id\"");
+        if (i < 0) return null;
+        int c = body.indexOf(":", i);
+        int q1 = body.indexOf('"', c);
+        int q2 = body.indexOf('"', q1 + 1);
+        if (q1 < 0 || q2 < 0) return null;
+        return body.substring(q1 + 1, q2);
     }
 }
