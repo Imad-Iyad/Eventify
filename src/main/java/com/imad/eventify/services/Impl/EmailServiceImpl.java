@@ -67,16 +67,12 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             ResponseEntity<String> res = restTemplate.exchange(RESEND_URL, HttpMethod.POST, entity, String.class);
-
-            // اطبع دائمًا الحالة والجسم للتشخيص
             System.out.println("Resend status=" + res.getStatusCode().value());
             System.out.println("Resend body=" + res.getBody());
 
             if (res.getStatusCode().is2xxSuccessful()) {
-                // استخرج messageId
                 String id = extractId(res.getBody());
                 System.out.println("Resend messageId=" + id);
-                // احفظ id في DB لو عندك جدول Notifications/Emails
             } else {
                 System.err.println("Failed to send email: " + res.getBody());
             }
