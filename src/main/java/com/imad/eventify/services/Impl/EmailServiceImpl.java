@@ -51,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private void sendEmail(String to, String subject, String html, String textFallback) {
-        // ابنِ الجسم كـ Map لتفادي مشاكل الهروب/الاقتباسات
+        // ابني الجسم كـ Map لتفادي مشاكل الهروب/الاقتباسات
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", from);                 // يجب أن يكون على دومين مُفعّل في Resend
         payload.put("to", List.of(to));
