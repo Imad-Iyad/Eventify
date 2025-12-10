@@ -1,6 +1,7 @@
 package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.services.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -74,7 +76,7 @@ public class EmailServiceImpl implements EmailService {
                 String id = extractId(res.getBody());
                 System.out.println("Resend messageId=" + id);
             } else {
-                System.err.println("Failed to send email: " + res.getBody());
+                log.info("Failed to send email");
             }
         } catch (Exception e) {
             System.err.println("Error sending email: " + e.getMessage());

@@ -13,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(title = "Eventify API", version = "1.0")
-        /*,servers = {
-                @Server(url = "https://homeservice-production-5b76.up.railway.app") // بيجبر Swagger يستخدم HTTPS
-        }*/
 )
 @SecurityScheme(
         name = "bearerAuth",

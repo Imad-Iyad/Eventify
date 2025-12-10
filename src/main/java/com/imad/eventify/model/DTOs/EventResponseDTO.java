@@ -17,6 +17,7 @@ public class EventResponseDTO {
     private String title;
     private String description;
     private String location;
+    private Integer capacity;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private EventType eventType;
