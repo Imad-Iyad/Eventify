@@ -2,6 +2,7 @@ package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.services.EmailService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,11 +15,11 @@ import java.util.Map;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    //@Value("${RESEND_API_KEY}")
-    private final String apiKey = "re_NTdTvbBH_BSmXBHDNoaPz1DrLWB9BM8LK"; // API Key from Resend
+    @Value("${resend.api.key}")
+    private String apiKey;
 
-    //@Value("${RESEND_FROM:noreply@imadapps.com}")
-    private final String from = "noreply@imadapps.com";
+    @Value("${resend.from}")
+    private String from;
 
     private static final String RESEND_URL = "https://api.resend.com/emails";
 
@@ -53,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private void sendEmail(String to, String subject, String html, String textFallback) {
-        // ابني الجسم كـ Map لتفادي مشاكل الهروب/الاقتباسات
+        // الجسم كـ Map لتفادي مشاكل الهروب/الاقتباسات
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", from);                 // يجب أن يكون على دومين مُفعّل في Resend
         payload.put("to", List.of(to));

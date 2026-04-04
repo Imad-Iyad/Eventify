@@ -5,8 +5,10 @@ import com.imad.eventify.model.DTOs.AuthenticationRequest;
 import com.imad.eventify.model.DTOs.AuthenticationResponse;
 import com.imad.eventify.model.DTOs.RegisterRequest;
 import com.imad.eventify.model.entities.EmailOtp;
+import com.imad.eventify.model.entities.PasswordResetToken;
 import com.imad.eventify.model.entities.User;
 import com.imad.eventify.repositories.EmailOtpRepository;
+import com.imad.eventify.repositories.PasswordResetTokenRepository;
 import com.imad.eventify.repositories.UserRepository;
 import com.imad.eventify.security.JwtService;
 import com.imad.eventify.services.EmailService;
@@ -14,11 +16,13 @@ import com.imad.eventify.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final EmailOtpRepository emailOtpRepository;
     private final EmailService emailService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * User Registration: creates an unverified account and sends OTP
@@ -278,5 +284,42 @@ public class AuthenticationService {
         }
     }
 
+    public void forgotPassword(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElse(null);
+
+        if (user == null)
+            return; // عشان ما نكشف وجود الايميل
+
+        String token = UUID.randomUUID().toString();
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUser(user);
+        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(15));
+
+        passwordResetTokenRepository.save(resetToken);
+
+        String resetLink = "https://yourfrontend.com/reset-password?token=" + token;
+
+        emailService.sendEmail(email, "Reset Password", resetLink);
+    }
+
+    public void resetPassword(String token, String newPassword) {
+
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now()))
+            throw new RuntimeException("Token expired");
+
+        User user = resetToken.getUser();
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken); // نحذفه بعد الاستخدام
+    }
 
 }
