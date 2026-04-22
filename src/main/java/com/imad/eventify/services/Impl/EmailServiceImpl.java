@@ -2,7 +2,6 @@ package com.imad.eventify.services.Impl;
 
 import com.imad.eventify.services.EmailService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,11 +14,11 @@ import java.util.Map;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${resend.api.key}")
-    private String apiKey;
+    //@Value("${resend.api.key}")
+    private String apiKey = "re_NTdTvbBH_BSmXBHDNoaPz1DrLWB9BM8LK";
 
-    @Value("${resend.from}")
-    private String from;
+    //@Value("${resend.from}")
+    private String from = "noreply@imadapps.com";
 
     private static final String RESEND_URL = "https://api.resend.com/emails";
 
