@@ -1,5 +1,6 @@
 package com.imad.eventify.model.DTOs;
 
+import com.imad.eventify.model.entities.User;
 import com.imad.eventify.model.entities.enums.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +22,5 @@ public class EventResponseDTO {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private EventType eventType;
+    private User Organizer;
 }

@@ -36,20 +36,21 @@ public class AuthController {
         authenticationService.resendOtp(email);
         return ResponseEntity.ok("A new OTP has been sent to your email.");
     }
-    @PostMapping("/forgot-password")
+
+/*    @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         authenticationService.forgotPassword(email);
         return ResponseEntity.ok("If the email exists, a reset link has been sent.");
-    }
+    }*/
 
-    @PostMapping("/reset-password")
+/*    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(
             @RequestParam String token,
             @RequestParam String newPassword) {
 
         authenticationService.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password reset successfully.");
-    }
+    }*/
 
 }
 
