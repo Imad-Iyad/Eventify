@@ -81,9 +81,7 @@ public class EventServiceImpl implements EventService {
         existing.setEndDateTime(updateEventDTO.getEndDateTime());
         existing.setEventType(updateEventDTO.getEventType());
         existing.setUpdatedAt(LocalDateTime.now());
-        EventResponseDTO dto = eventMapper.toDTO(eventRepository.save(existing));
-        dto.setOrganizer(existing.getOrganizer());
-        return dto;
+        return toDtoUtil(existing);
     }
 
     @Override
@@ -102,7 +100,7 @@ public class EventServiceImpl implements EventService {
 
     public EventResponseDTO toDtoUtil(Event event) {
         EventResponseDTO dto = eventMapper.toDTO(event);
-        dto.setOrganizer(event.getOrganizer());
+        dto.setOrganizerId(event.getOrganizer().getId());
         return dto;
     }
 }
