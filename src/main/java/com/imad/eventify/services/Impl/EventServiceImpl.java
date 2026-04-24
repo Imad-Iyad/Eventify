@@ -45,21 +45,21 @@ public class EventServiceImpl implements EventService {
                 .build();
 
         Event savedEvent = eventRepository.save(event);
-        return eventMapper.toDTO(savedEvent);
+        return toDtoUtil(savedEvent);
     }
 
     @Override
     public EventResponseDTO getEventById(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
-        return eventMapper.toDTO(event);
+        return toDtoUtil(event);
     }
 
     @Override
     public List<EventResponseDTO> getAllEvents() {
         return eventRepository.findAll()
                 .stream()
-                .map(eventMapper::toDTO)
+                .map(this::toDtoUtil)
                 .collect(Collectors.toList());
     }
 
@@ -81,7 +81,9 @@ public class EventServiceImpl implements EventService {
         existing.setEndDateTime(updateEventDTO.getEndDateTime());
         existing.setEventType(updateEventDTO.getEventType());
         existing.setUpdatedAt(LocalDateTime.now());
-        return eventMapper.toDTO(eventRepository.save(existing));
+        EventResponseDTO dto = eventMapper.toDTO(eventRepository.save(existing));
+        dto.setOrganizer(existing.getOrganizer());
+        return dto;
     }
 
     @Override
@@ -96,6 +98,12 @@ public class EventServiceImpl implements EventService {
             throw new AccessDeniedException("You are not allowed to delete this event");
         }
         eventRepository.deleteById(id);
+    }
+
+    public EventResponseDTO toDtoUtil(Event event) {
+        EventResponseDTO dto = eventMapper.toDTO(event);
+        dto.setOrganizer(event.getOrganizer());
+        return dto;
     }
 }
 
