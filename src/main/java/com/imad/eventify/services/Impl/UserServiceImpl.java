@@ -65,7 +65,9 @@ public class UserServiceImpl implements UserService {
         User existing = getCurrentUserEntity();
         UserValidator.assertUserIsActive(existing);
 
-        userMapper.updateUserFromDto(userDTO, existing);
+        if (userDTO.getName() != null && !userDTO.getName().isBlank()) {
+            existing.setName(userDTO.getName());
+        }
 
         if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
             existing.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -73,7 +75,14 @@ public class UserServiceImpl implements UserService {
 
         existing.setUpdatedAt(LocalDateTime.now());
 
-        return userMapper.toResponseDTO(userRepository.save(existing));
+        User savedUser = userRepository.save(existing);
+
+        return UserResponseDTO.builder()
+                .id(savedUser.getId())
+                .name(savedUser.getName())
+                .email(savedUser.getEmail())
+                .role(savedUser.getRole())
+                .build();
     }
 
 
