@@ -16,7 +16,6 @@ public class RegistrationDTO {
     @Min(value = 1, message = "eventId must be positive")
     private Long eventId;
 
-    @NotNull(message = "invitationId cannot be null")
     @Min(value = 1, message = "invitationId must be positive")
     private Long invitationId;
 

@@ -203,7 +203,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         Registration registration = registrationRepository.findByRegistrationToken(token)
                 .orElseThrow(() -> new RuntimeException("Registration not found with token: " + token));
 
-        if (!registration.getUser().getId().equals(userService.getCurrentUserEntity().getId())) {
+        User currentUser = userService.getCurrentUserEntity();
+
+        boolean isOwner = registration.getUser().getId().equals(currentUser.getId());
+
+        boolean isOrganizer = registration.getEvent().getOrganizer().getId().equals(currentUser.getId());
+
+        if (!isOwner && !isOrganizer) {
             throw new AccessDeniedException("You are not allowed to access this registration");
         }
 

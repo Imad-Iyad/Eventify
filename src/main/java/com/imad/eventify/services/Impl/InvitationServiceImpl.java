@@ -82,8 +82,12 @@ public class InvitationServiceImpl implements InvitationService {
         UserValidator.assertUserIsActive(user);
 
         // Security check: only the invitee can use this token
-        if (!invitation.getEmail().equals(user.getEmail())) {
+        if (!invitation.getEmail().equalsIgnoreCase(user.getEmail())) {
             throw new AccessDeniedException("You are not allowed to access this invitation");
+        }
+
+        if (invitation.getStatus() == InvitationStatus.USED) {
+            throw new AccessDeniedException("This invitation has already been used");
         }
 
         return RegistrationDTO.builder()

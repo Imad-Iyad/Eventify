@@ -43,6 +43,7 @@ public class RegistrationController {
      * @return The registration details.
      */
     // Check inside the service
+    @PreAuthorize("hasRole('ATTENDEE') or hasRole('ORGANIZER')")
     @GetMapping("/{token}")
     public ResponseEntity<RegistrationResDTO> getRegistrationByToken(@PathVariable @NotBlank(message = "Token cannot be blank") String token) {
         RegistrationResDTO registrationResDTO = registrationService.getRegistrationByToken(token);
@@ -87,7 +88,7 @@ public class RegistrationController {
      * - The frontend should not manually provide userId → it must come from the session
      *   (ensuring security).
      */
-    // Check inside the service
+    // Check inside the service  // التسجيل الي بنحاول نعملو
     @GetMapping("/by-invitation/{token}")
     public ResponseEntity<RegistrationDTO> getRegistrationFromInvitation(@PathVariable @NotBlank(message = "Token cannot be blank")  String token) {
         return ResponseEntity.ok(invitationService.getInvitationByToken(token));

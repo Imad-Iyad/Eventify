@@ -65,14 +65,12 @@ public class UserServiceImpl implements UserService {
         User existing = getCurrentUserEntity();
         UserValidator.assertUserIsActive(existing);
 
-        /*// If the email changes, verify the uniqueness
-        if (userDTO.getEmail() != null && !existing.getEmail().equals(userDTO.getEmail()) &&
-                userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("Email " + userDTO.getEmail() + " is already in use");
-        }*/
-
-        //Partial Update Using MapStruct
         userMapper.updateUserFromDto(userDTO, existing);
+
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+
         existing.setUpdatedAt(LocalDateTime.now());
 
         return userMapper.toResponseDTO(userRepository.save(existing));
