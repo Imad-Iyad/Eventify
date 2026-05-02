@@ -59,9 +59,9 @@ public class EventController {
     // Only The Organizer Who Have The Event Can Delete it
     @PreAuthorize("hasRole('ADMIN') or @eventSecurity.isOrganizer(#id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(
+    public ResponseEntity<String> deleteEvent(
             @PathVariable("id") @NotNull(message = "ID cannot be null") @Min(value = 1, message = "ID must be positive") long id) {
         eventService.deleteEvent(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Event has been deleted successfully");
     }
 }
