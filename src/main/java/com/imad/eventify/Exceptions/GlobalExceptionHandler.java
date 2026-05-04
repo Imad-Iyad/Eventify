@@ -121,6 +121,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EventDeletionNotAllowedException.class)
+    public ResponseEntity<Map<String, Object>> handleEventDeletionNotAllowed(
+            EventDeletionNotAllowedException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                "Deletion Not Allowed",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
