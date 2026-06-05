@@ -6,6 +6,7 @@ import com.imad.eventify.model.DTOs.EventResponseDTO;
 import com.imad.eventify.model.DTOs.UpdateEventDTO;
 import com.imad.eventify.model.entities.Event;
 import com.imad.eventify.model.entities.User;
+import com.imad.eventify.model.entities.enums.EventType;
 import com.imad.eventify.model.mappers.EventMapper;
 import com.imad.eventify.repositories.EventRepository;
 import com.imad.eventify.repositories.RegistrationRepository;
@@ -84,6 +85,17 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventResponseDTO> getAllEvents() {
         return eventRepository.findAll()
+                .stream()
+                .map(this::toDtoUtil)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventResponseDTO> getCurrentUserRegisteredEventsByType(EventType eventType) {
+        User currentUser = userService.getCurrentUserEntity();
+        UserValidator.assertUserIsActive(currentUser);
+
+        return registrationRepository.findRegisteredEventsByUserAndEventType(currentUser, eventType)
                 .stream()
                 .map(this::toDtoUtil)
                 .collect(Collectors.toList());
