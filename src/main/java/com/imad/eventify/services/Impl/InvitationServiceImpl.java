@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -94,5 +95,17 @@ public class InvitationServiceImpl implements InvitationService {
                 .eventId(invitation.getEvent().getId())
                 .invitationId(invitation.getId())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InvitationResponseDTO> getMyInvitations() {
+        User currentUser = userService.getCurrentUserEntity();
+        UserValidator.assertUserIsActive(currentUser);
+
+        return invitationRepository.findByEmailIgnoreCaseOrderBySentAtDesc(currentUser.getEmail())
+                .stream()
+                .map(invitationMapper::toResponseDTO)
+                .toList();
     }
 }

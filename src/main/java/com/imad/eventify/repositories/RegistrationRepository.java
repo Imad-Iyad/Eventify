@@ -21,4 +21,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     boolean existsByEvent(Event event);
     @Query("select distinct r.event from Registration r where r.user = :user and r.event.eventType = :eventType")
     List<Event> findRegisteredEventsByUserAndEventType(@Param("user") User user, @Param("eventType") EventType eventType);
+    @Query("select r from Registration r join fetch r.event where r.user = :user and r.event.eventType = :eventType")
+    List<Registration> findByUserAndEventTypeWithEvent(@Param("user") User user, @Param("eventType") EventType eventType);
 }

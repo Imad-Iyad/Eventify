@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findByEventId(Long eventId);
+    List<Invitation> findByEmailIgnoreCaseOrderBySentAtDesc(String email);
     Optional<Invitation> findByToken(String token);
 }

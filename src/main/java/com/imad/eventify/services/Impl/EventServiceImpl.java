@@ -3,8 +3,10 @@ package com.imad.eventify.services.Impl;
 import com.imad.eventify.Exceptions.*;
 import com.imad.eventify.model.DTOs.EventCreationRequest;
 import com.imad.eventify.model.DTOs.EventResponseDTO;
+import com.imad.eventify.model.DTOs.MyEventResponseDTO;
 import com.imad.eventify.model.DTOs.UpdateEventDTO;
 import com.imad.eventify.model.entities.Event;
+import com.imad.eventify.model.entities.Registration;
 import com.imad.eventify.model.entities.User;
 import com.imad.eventify.model.entities.enums.EventType;
 import com.imad.eventify.model.mappers.EventMapper;
@@ -91,13 +93,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventResponseDTO> getCurrentUserRegisteredEventsByType(EventType eventType) {
+    public List<MyEventResponseDTO> getCurrentUserRegisteredEventsByType(EventType eventType) {
         User currentUser = userService.getCurrentUserEntity();
         UserValidator.assertUserIsActive(currentUser);
 
-        return registrationRepository.findRegisteredEventsByUserAndEventType(currentUser, eventType)
+        return registrationRepository.findByUserAndEventTypeWithEvent(currentUser, eventType)
                 .stream()
-                .map(this::toDtoUtil)
+                .map(this::toMyEventResponseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -174,6 +176,22 @@ public class EventServiceImpl implements EventService {
         EventResponseDTO dto = eventMapper.toDTO(event);
         dto.setOrganizerId(event.getOrganizer().getId());
         return dto;
+    }
+
+    private MyEventResponseDTO toMyEventResponseDTO(Registration registration) {
+        Event event = registration.getEvent();
+
+        return MyEventResponseDTO.builder()
+                .eventId(event.getId())
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .location(event.getLocation())
+                .startDateTime(event.getStartDateTime())
+                .endDateTime(event.getEndDateTime())
+                .eventType(event.getEventType())
+                .registrationToken(registration.getRegistrationToken())
+                .registeredAt(registration.getRegisteredAt())
+                .build();
     }
 }
 
