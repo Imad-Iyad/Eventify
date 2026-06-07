@@ -2,9 +2,7 @@ package com.imad.eventify.controllers;
 
 import com.imad.eventify.model.DTOs.EventCreationRequest;
 import com.imad.eventify.model.DTOs.EventResponseDTO;
-import com.imad.eventify.model.DTOs.MyEventResponseDTO;
 import com.imad.eventify.model.DTOs.UpdateEventDTO;
-import com.imad.eventify.model.entities.enums.EventType;
 import com.imad.eventify.services.EventService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -32,13 +30,13 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-    // Get events the current user is registered for by event type
+    /*// Get events the current user is registered for by event type
     @GetMapping("/me")
     public ResponseEntity<List<MyEventResponseDTO>> getCurrentUserRegisteredEventsByType(
             @RequestParam("type") @NotNull(message = "Event type cannot be null") EventType type) {
         List<MyEventResponseDTO> events = eventService.getCurrentUserRegisteredEventsByType(type);
         return ResponseEntity.ok(events);
-    }
+    }*/
 
     // Get event by ID
     @GetMapping("/{id}")
